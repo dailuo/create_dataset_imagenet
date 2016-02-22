@@ -132,3 +132,8 @@ def create_dataset():
 
     test_images = read_images_test(TEST_PATH)
     save_to_records('/home/dailuo/data/ILSVRC2013/test_sample.tf',test_images)
+
+
+if __name__ == '__main__':
+    create_dataset()
+
