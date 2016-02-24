@@ -1,9 +1,7 @@
 from __future__ import division
 
 import sys, os, time, math
-import ipdb
 import tensorflow as tf
-import joblib
 import numpy as np
 from scipy import misc
 
@@ -131,7 +129,7 @@ def create_dataset():
                 'width': _int64_feature(width),
                 'depth': _int64_feature(depth),
                 'label': _int64_feature(label),
-                'path': _bytes_feature(path)
+                'path': _bytes_feature(path),
                 'image_raw': _bytes_feature(image_raw)
                 }))
             writer.write(example.SerializeToString())
