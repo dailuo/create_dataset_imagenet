@@ -30,6 +30,7 @@ def _bytes_feature(value):
 def read_images_train(data_path, meta_path): # for train
     # data_path is the train set path
     # list path is the meta.txt path
+    print('Reading Train images...')
     list_file = open(meta_path, 'r')
     image_list = []
     while True:
@@ -42,6 +43,7 @@ def read_images_train(data_path, meta_path): # for train
         root = os.path.join(data_path, WNID)
         file_list = os.listdir(root)
         for filename in file_list:
+            print(filename)
             file_path = os.path.join(root, filename)
             try:
                 image = misc.imread(file_path)
@@ -57,6 +59,7 @@ def read_images_train(data_path, meta_path): # for train
 
 def read_images_validation(data_path, val_label_path, val_blacklist_path):
     # for validation
+    print('Reading Validation images...')
     file_list = os.listdir(data_path)
     file_list.sort()
 
@@ -75,6 +78,7 @@ def read_images_validation(data_path, val_label_path, val_blacklist_path):
 
     for (filename, sequence) in zip(file_list,xrange(len(file_list))):
         # discard unqualified images
+        print(filename)
         if sequence+1 in val_blacklist:
             continue
 
@@ -92,11 +96,13 @@ def read_images_validation(data_path, val_label_path, val_blacklist_path):
 
 
 def read_images_test(data_path):
+    print('Reading Test images...')
     file_list = os.listdir(data_path)
 
     image_list = []
 
     for filename in file_list:
+        print(filename)
         file_path = os.path.join(data_path, filename)
         try:
             image = misc.imread(file_path)
@@ -140,12 +146,15 @@ def create_dataset():
 
     train_images = read_images_train(TRAIN_PATH, meta_path)
     save_to_records('/home/dailuo/data/ILSVRC2013/train_sample.tf',train_images)
+    print('Train images saved.')
 
     val_images = read_images_validation(VALIDATION_PATH, val_label_path, val_blacklist_path)
     save_to_records('/home/dailuo/data/ILSVRC2013/val_sample.tf', val_images)
+    print('Validation images saved.')
 
     test_images = read_images_test(TEST_PATH)
     save_to_records('/home/dailuo/data/ILSVRC2013/test_sample.tf',test_images)
+    print('Test images saved.')
 
 
 if __name__ == '__main__':
