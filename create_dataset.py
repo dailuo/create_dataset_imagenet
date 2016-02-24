@@ -55,7 +55,7 @@ def read_images_train(data_path, meta_path): # for train
 
 
 
-def read_images_validation(data_path, val_label_path):
+def read_images_validation(data_path, val_label_path, val_blacklist_path):
     # for validation
     file_list = os.listdir(data_path)
     file_list.sort()
@@ -63,9 +63,21 @@ def read_images_validation(data_path, val_label_path):
     val_label_file = open(val_label_path, 'r')
     val_label = val_label_file.readlines()
     val_label_file.close()
+
+    #discard unqualified images
+    val_blacklist_file = open(val_blacklist_path, 'r')
+    val_blacklist = val_blacklist_file.readlines()
+    val_blacklist_file.close()
+    for index, item in enumerate(val_blacklist):
+        val_blacklist[index] = int(item)
+
     image_list = []
 
     for (filename, sequence) in zip(file_list,xrange(len(file_list))):
+        # discard unqualified images
+        if sequence+1 in val_blacklist:
+            continue
+
         file_path = os.path.join(data_path, filename)
         try:
             image = misc.imread(file_path)
@@ -75,6 +87,7 @@ def read_images_validation(data_path, val_label_path):
             continue
         label = string.atoi(val_label[sequence])
         image_list.append({'image':image, 'file_path':file_path,'label':label})
+
     return image_list
 
 
@@ -123,11 +136,12 @@ def create_dataset():
 
     meta_path = 'meta.txt'
     val_label_path = 'ILSVRC2014_clsloc_validation_ground_truth.txt'
+    val_blacklist_path = 'ILSVRC2014_clsloc_validation_blacklist.txt'
 
     train_images = read_images_train(TRAIN_PATH, meta_path)
     save_to_records('/home/dailuo/data/ILSVRC2013/train_sample.tf',train_images)
 
-    val_images = read_images_validation(VALIDATION_PATH, val_label_path)
+    val_images = read_images_validation(VALIDATION_PATH, val_label_path, val_blacklist_path)
     save_to_records('/home/dailuo/data/ILSVRC2013/val_sample.tf', val_images)
 
     test_images = read_images_test(TEST_PATH)
@@ -136,4 +150,3 @@ def create_dataset():
 
 if __name__ == '__main__':
     create_dataset()
-
